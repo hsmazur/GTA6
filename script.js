@@ -1,127 +1,81 @@
 // Obtendo os elementos do jogo
 const personagem = document.getElementById('personagem');
 const cidade = document.getElementById('cidade');
+const relogio = document.getElementById('relogio');
 
+// Atualiza o relógio na tela
 function atualizarRelogio() {
     const agora = new Date();
-    const horas = agora.getHours().toString().padStart(2, '0');
-    const minutos = agora.getMinutes().toString().padStart(2, '0');
-    const segundos = agora.getSeconds().toString().padStart(2, '0');
-    document.getElementById('relogio').textContent = `${horas}:${minutos}:${segundos}`;
+    relogio.textContent = agora.toLocaleTimeString('pt-BR', { hour12: false });
 }
 setInterval(atualizarRelogio, 1000);
 atualizarRelogio();
 
-// Posições iniciais centralizadas na cidade
+// Posições iniciais do personagem
 let posX = cidade.clientWidth / 2 - 50;
 let posY = cidade.clientHeight / 2 - 50;
-
-// Direção inicial (direita)
 let direcao = 'direita';
 
 // Flags de movimento
-let movendoCima = false;
-let movendoBaixo = false;
-let movendoEsquerda = false;
-let movendoDireita = false;
+const movimento = { cima: false, baixo: false, esquerda: false, direita: false };
 
 // Função para mover o personagem
 function moverPersonagem() {
     const passo = 5;
-
-    if (movendoCima) {
-        posY -= passo;
-        direcao = 'cima';
-    }
-    if (movendoBaixo) {
-        posY += passo;
-        direcao = 'baixo';
-    }
-    if (movendoEsquerda) {
-        posX -= passo;
-        direcao = 'esquerda';
-    }
-    if (movendoDireita) {
-        posX += passo;
-        direcao = 'direita';
-    }
+    if (movimento.cima) posY -= passo;
+    if (movimento.baixo) posY += passo;
+    if (movimento.esquerda) posX -= passo;
+    if (movimento.direita) posX += passo;
 
     // Garantir que o personagem não saia da cidade
     posX = Math.max(0, Math.min(cidade.clientWidth - 100, posX));
     posY = Math.max(0, Math.min(cidade.clientHeight - 100, posY));
 
-    // Atualizando a posição do personagem
     personagem.style.left = posX + 'px';
     personagem.style.top = posY + 'px';
 }
 
-// Função para criar e mover os quadradinhos na direção do personagem
+// Função para atirar
 function atirar() {
-    const quadradinho = document.createElement('div');
-    quadradinho.classList.add('quadradinho');
-    quadradinho.style.left = (posX + 45) + 'px';
-    quadradinho.style.top = (posY + 45) + 'px';
-    cidade.appendChild(quadradinho);
+    const tiro = document.createElement('div');
+    tiro.classList.add('quadradinho');
+    tiro.style.position = 'absolute';
+    tiro.style.left = (posX + 45) + 'px';
+    tiro.style.top = (posY + 45) + 'px';
+    cidade.appendChild(tiro);
 
-    let velocidade = 10;
-    let quadradinhoX = posX + 45;
-    let quadradinhoY = posY + 45;
-    let direcaoTiro = direcao; // Salvar a direção no momento do disparo
+    let tiroX = posX + 45;
+    let tiroY = posY + 45;
+    const velocidade = 10;
+    const direcaoTiro = direcao;
 
-    function moverQuadradinho() {
+    function moverTiro() {
         switch (direcaoTiro) {
-            case 'cima': quadradinhoY -= velocidade; break;
-            case 'baixo': quadradinhoY += velocidade; break;
-            case 'esquerda': quadradinhoX -= velocidade; break;
-            case 'direita': quadradinhoX += velocidade; break;
+            case 'cima': tiroY -= velocidade; break;
+            case 'baixo': tiroY += velocidade; break;
+            case 'esquerda': tiroX -= velocidade; break;
+            case 'direita': tiroX += velocidade; break;
         }
 
-        quadradinho.style.left = quadradinhoX + 'px';
-        quadradinho.style.top = quadradinhoY + 'px';
+        tiro.style.left = tiroX + 'px';
+        tiro.style.top = tiroY + 'px';
 
-        // Remover quando sair da tela
         if (
-            quadradinhoX < 0 || quadradinhoX > cidade.clientWidth ||
-            quadradinhoY < 0 || quadradinhoY > cidade.clientHeight
+            tiroX < 0 || tiroX > cidade.clientWidth ||
+            tiroY < 0 || tiroY > cidade.clientHeight
         ) {
-            quadradinho.remove();
+            tiro.remove();
         } else {
-            requestAnimationFrame(moverQuadradinho);
+            requestAnimationFrame(moverTiro);
         }
     }
-
-    moverQuadradinho();
+    requestAnimationFrame(moverTiro);
 }
 
-// Eventos de teclado para movimento e tiro
-document.addEventListener('keydown', (event) => {
-    if (event.key === 'ArrowUp') movendoCima = true;
-    if (event.key === 'ArrowDown') movendoBaixo = true;
-    if (event.key === 'ArrowLeft') movendoEsquerda = true;
-    if (event.key === 'ArrowRight') movendoDireita = true;
-    if (event.key === ' ') atirar();
-});
-
-document.addEventListener('keyup', (event) => {
-    if (event.key === 'ArrowUp') movendoCima = false;
-    if (event.key === 'ArrowDown') movendoBaixo = false;
-    if (event.key === 'ArrowLeft') movendoEsquerda = false;
-    if (event.key === 'ArrowRight') movendoDireita = false;
-});
-
-// Loop do jogo
-function gameLoop() {
-    moverPersonagem();
-    requestAnimationFrame(gameLoop);
-}
-
-gameLoop();
-
-/* Detecta colisão do tiro com o carro */
+// Detecta colisão entre tiro e carro
 function detectarColisao(tiro, carro) {
     let tiroRect = tiro.getBoundingClientRect();
     let carroRect = carro.getBoundingClientRect();
-    
     return (
         tiroRect.left < carroRect.right &&
         tiroRect.right > carroRect.left &&
@@ -130,15 +84,48 @@ function detectarColisao(tiro, carro) {
     );
 }
 
-// Verifica colisões entre tiros e carros a cada intervalo
-setInterval(() => {
+// Função para verificar colisões
+function verificarColisoes() {
     document.querySelectorAll('.quadradinho').forEach(tiro => {
-        document.querySelectorAll('.carro').forEach(carro => {
+        document.querySelectorAll('.carro, .carro2, .carro3').forEach(carro => {
             if (detectarColisao(tiro, carro)) {
                 carro.classList.add('explosao');
-                setTimeout(() => carro.remove(), 500); // Remove o carro após a explosão
-                tiro.remove(); // Remove o tiro após a colisão
+                setTimeout(() => {
+                    carro.remove(); // Remove o carro da tela após explosão
+                }, 500);
+                tiro.remove();
             }
         });
     });
-}, 50);
+}
+
+// Eventos de teclado
+document.addEventListener('keydown', (event) => {
+    if (event.key === 'w') movimento.cima = true, direcao = 'cima';
+    if (event.key === 's') movimento.baixo = true, direcao = 'baixo';
+    if (event.key === 'a') movimento.esquerda = true, direcao = 'esquerda';
+    if (event.key === 'd') movimento.direita = true, direcao = 'direita';
+});
+
+document.addEventListener('keyup', (event) => {
+    if (event.key === 'w') movimento.cima = false;
+    if (event.key === 's') movimento.baixo = false;
+    if (event.key === 'a') movimento.esquerda = false;
+    if (event.key === 'd') movimento.direita = false;
+});
+
+// Atirar com clique do mouse
+document.addEventListener('mousedown', (event) => {
+    if (event.button === 0) { // Botão esquerdo do mouse
+        atirar();
+    }
+});
+
+// Loop principal do jogo
+function gameLoop() {
+    moverPersonagem();
+    verificarColisoes();
+    requestAnimationFrame(gameLoop);
+}
+
+gameLoop();
