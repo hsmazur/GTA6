@@ -19,10 +19,22 @@
             <p><strong>Desenvolvimento:</strong> Hugo</p>
             <p><strong>Design:</strong> Hugo</p>
             <p><strong>Trilha Sonora:</strong> Hugo</p>
-            <h3><strong>2025 All Rights Reserved</strong></h3>
+            <h3><strong>© 2025 Rockstar - All Rights Reserved</strong></h3>
             <button onclick="toggleCreditos()">Fechar</button>
         </div>
     </div>
+    
+    <audio id="musica" loop>
+        <source src="musica.mp3" type="audio/mpeg">
+    </audio>
+    
+    <script>
+        document.getElementById("musica").volume = 0.25; // Volume de 0.0 (mudo) a 1.0 (máximo)
+        document.addEventListener("click", function() {
+            document.getElementById("musica").play();
+        }, 
+        { once: true });
+    </script>
 
     <script>
         function toggleCreditos() {
@@ -31,4 +43,6 @@
     </script>
 </body>
 </html>
+
+
 
