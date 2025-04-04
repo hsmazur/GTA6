@@ -13,70 +13,19 @@ body {
     background-image: url('Imagens/cenario.png');
     background-size: cover;
     background-position: center;
+    cursor: none;
 }
 
 #personagem {
     width: 100px;
     height: 100px;
-    background-image: url('Imagens/personagem.jpeg'); /* Adicionar imagem */
+    background-image: url('Imagens/personagem.jpeg');
     background-size: cover;
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    transition: top 0.1s, left 0.1s;
-    z-index: 2; /* Garante que o personagem fique sobre os outros elementos */
-}
-
-/* Estilos para os quadradinhos */
-.quadradinho {
-    width: 10px;
-    height: 10px;
-    background-color: black;
-    position: absolute;
-    transition: left 0.1s;
-    z-index: 1;
-}
-
-/* Estilos para os carros */
-.carro {
-    width: 120px;
-    height: 60px;
-    background-image: url('Imagens/carro.jpeg'); /* Adicionar imagem do carro */
-    background-size: cover;
-    position: absolute;
-    z-index: 1;
-}
-
-/* Efeito de explosão ao ser atingido */
-.explosao {
-    background-image: url('Imagens/explosão.jpg'); /* Adicionar imagem de explosão */
-    background-size: cover;
-    animation: desaparecer 0.5s forwards;
-}
-
-@keyframes desaparecer {
-    0% { opacity: 1; transform: scale(1); }
-    100% { opacity: 0; transform: scale(2); }
-}
-
-/* Estilização do contêiner da imagem no canto inferior esquerdo */
-#containerImagem {
-    position: absolute;
-    bottom: 20px;
-    left: 20px;
-    width: 180px;
-    height: 180px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1; /* Mantém a imagem abaixo do personagem */
-}
-
-#containerImagem img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+    z-index: 2;
 }
 
 /* Estilização do relógio */
@@ -93,7 +42,61 @@ body {
     text-align: center;
     z-index: 1;
 }
-/* Posicionamento inicial dos carros no cenário */
-.carro:nth-child(1) { top: 100px; left: 200px; }
-.carro:nth-child(2) { top: 300px; left: 400px; }
-.carro:nth-child(3) { top: 500px; left: 600px; }
+
+/* Mini mapa no canto inferior esquerdo */
+#containerImagem {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    width: 180px;
+    height: 180px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1;
+}
+
+#containerImagem img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Estilos para os carros */
+.carro, .carro2, .carro3 {
+    width: 150px;
+    height: 90px;
+    background-size: cover;
+    position: absolute;
+    z-index: 1;
+}
+.quadradinho {
+    width: 10px;
+    height: 10px;
+    background-color: black; /* Torna o tiro visível */
+    position: absolute;
+    border-radius: 50%; /* Opcional, para dar um efeito de bala */
+    z-index: 2; /* Para aparecer acima dos outros elementos */
+}
+
+.carro {
+    background-image: url('Imagens/carro.jpeg');
+}
+.carro2 {
+    background-image: url('Imagens/carro2.jpeg');
+}
+.carro3 {
+    background-image: url('Imagens/carro3.jpeg');
+}
+
+/* Efeito de explosão ao ser atingido */
+.explosao {
+    background-image: url('Imagens/explosão.jpg');
+    background-size: cover;
+    animation: desaparecer 0.5s forwards;
+}
+
+@keyframes desaparecer {
+    0% { opacity: 1; transform: scale(1); }
+    100% { opacity: 0; transform: scale(2); }
+}
