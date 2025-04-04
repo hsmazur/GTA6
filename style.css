@@ -3,6 +3,8 @@ body {
     text-align: center;
     background-color: #222;
     color: white;
+    background: url(Imagens/fundo.webp);
+
 }
 
 .container {
